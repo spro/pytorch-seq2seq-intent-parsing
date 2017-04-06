@@ -11,7 +11,7 @@ import os
 import sconce
 
 n_epochs = 50
-n_iters = 100
+n_iters = 500
 hidden_size = 50
 learning_rate = 0.05
 
