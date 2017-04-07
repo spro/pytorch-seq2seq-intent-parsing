@@ -1,6 +1,7 @@
 import torch
 from torch.autograd import Variable
 import random
+import re
 
 # ## Generating training data
 
@@ -150,6 +151,9 @@ for i in range(10):
 SOS_token = 0
 EOS_token = 1
 
+def tokenize_sentence(sentence):
+    return re.sub('[^\w\s]', '', sentence).strip().split(' ')
+
 class DictionaryLang():
     def __init__(self):
         self.word2index = {}
@@ -173,7 +177,7 @@ class DictionaryLang():
         return self.word2index[word]
 
     def indexes_from_sentence(self, sentence):
-        return [self.get_word(word) for word in sentence.split(' ')]
+        return [self.get_word(word) for word in tokenize_sentence(sentence)]
 
     def variable_from_sentence(self, sentence):
         indexes = self.indexes_from_sentence(sentence)
@@ -223,7 +227,7 @@ class GloVeLang:
             return torch.zeros(self.size)
 
     def variable_from_sentence(self, sentence):
-        words = sentence.split(' ')
+        words = tokenize_sentence(sentence)
         tensor = torch.zeros(len(words), 1, self.size)
         for wi in range(len(words)):
             word = words[wi]
