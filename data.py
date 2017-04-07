@@ -33,7 +33,7 @@ templates = [
          "what time is it",
          "what is the time"
     ]),
-    ("price getPrice", [
+    ("price getPrice $asset", [
          "how much is $asset",
          "what is the price of $asset"
     ]),
@@ -45,14 +45,14 @@ templates = [
 
 variables = {
     "$light_name": [
-        ("office", ["the office light", "the light in the office"]),
-        ("kitchen", ["the kitchen light", "the light in the kitchen"]),
-        ("living_room", ["the living room light", "the light in the living room", "the light in the den"]),
-        ("outside", ["the outside light", "the outdoor light", "the light outside", "the porch light"]),
+        ("office_light", ["the office light", "the light in the office"]),
+        ("kitchen_light", ["the kitchen light", "the light in the kitchen"]),
+        ("living_room_light", ["the living room light", "the light in the living room", "the light in the den"]),
+        ("outside_light", ["the outside light", "the outdoor light", "the light outside", "the porch light"]),
     ],
     "$group_name": [
-        ("all", ["all the lights", "everything"]),
-        ("bedroom", ["my lights", "the bedroom lights", "the lights", "the lights in my room"])
+        ("all_lights", ["all the lights", "everything"]),
+        ("bedroom_lights", ["my lights", "the bedroom lights", "the lights", "the lights in my room"])
     ],
     "$light_state": [
         ("on", ["on"]),
