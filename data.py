@@ -5,19 +5,25 @@ import random
 # ## Generating training data
 
 templates = [
-    ("lights setLight $light_name $light_state", [
+    ("lights setState $light_name $light_state", [
         "turn $light_state $light_name", 
         "turn $light_name $light_state"
     ]),
-    ("lights setLights $group_name $light_state", [
+    ("lights setState $light_name $light_amount", [
+        "set $light_name $light_amount"
+    ]),
+    ("lights setStates $group_name $light_state", [
         "turn $light_state $group_name", 
         "turn $group_name $light_state"
     ]),
-    ("lights setLight $light_name $light_amount", [
-        "set $light_name $light_amount"
+    ("lights setStates $group_name $light_amount", [
+        "set $group_name $light_amount"
     ]),
-    ("lights getLight $light_name", [
+    ("lights getState $light_name", [
         "is $light_name on"    
+    ]),
+    ("lights getStates $group_name", [
+        "are $group_name on"    
     ]),
     ("music setVolume $volume", [
          "turn the music $volume",
