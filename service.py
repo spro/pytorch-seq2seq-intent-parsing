@@ -2,13 +2,8 @@ import somata
 from evaluate import *
 
 def parse(input, cb):
-    command, prob, attn = evaluate(input)
-    if prob > -0.05:
-        print(prob, command)
-        cb(command)
-    else:
-        print(prob, "UNKNOWN")
-        cb(None)
+    parsed, prob, attn = evaluate(input)
+    print(parsed, prob)
+    cb({'parsed': parsed, 'prob': prob})
 
-commands = {'parse': parse}
-service = somata.Service('maia:parser', commands, {'bind_port': 7181})
+service = somata.Service('maia:parser', {'parse': parse}, {'bind_port': 7181})
