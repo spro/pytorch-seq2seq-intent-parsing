@@ -7,41 +7,42 @@ import re
 
 templates = [
     ("lights setState $light_name $light_state", [
-        "turn $light_state $light_name", 
-        "turn $light_name $light_state"
+        "turn $light_state $light_name",
+        "turn $light_name $light_state",
     ]),
     ("lights setState $light_name $light_amount", [
-        "set $light_name $light_amount"
+        "set $light_name $light_amount",
+        "make $light_name $light_amount",
     ]),
     ("lights setStates $group_name $light_state", [
-        "turn $light_state $group_name", 
-        "turn $group_name $light_state"
+        "turn $light_state $group_name",
+        "turn $group_name $light_state",
     ]),
     ("lights setStates $group_name $light_amount", [
-        "set $group_name $light_amount"
+        "set $group_name $light_amount",
     ]),
     ("lights getState $light_name", [
-        "is $light_name on"    
+        "is $light_name on",
     ]),
     ("lights getStates $group_name", [
-        "are $group_name on"    
+        "are $group_name on",
     ]),
     ("music setVolume $volume", [
          "turn the music $volume",
-         "turn it $volume"
+         "make it $volume",
     ]),
     ("time getTime", [
          "what time is it",
-         "what is the time"
+         "what is the time",
     ]),
     ("price getPrice $asset", [
          "how much is $asset",
-         "what is the price of $asset"
+         "what is the price of $asset",
     ]),
     ("weather getWeather $location", [
          "tell me the weather in $location",
          "what is it like in $location",
-    ])
+    ]),
 ]
 
 variables = {
@@ -53,23 +54,29 @@ variables = {
     ],
     "$group_name": [
         ("all_lights", ["all the lights", "everything"]),
-        ("bedroom_lights", ["my lights", "the bedroom lights", "the lights", "the lights in my room"])
+        ("bedroom_lights", ["my lights", "the bedroom lights", "the lights", "the lights in my room"]),
     ],
     "$light_state": [
         ("on", ["on"]),
-        ("off", ["off", "out"])
+        ("off", ["off", "out"]),
+        ("blue", ["blue"]),
+        ("green", ["green"]),
+        ("red", ["red"]),
+        ("purple", ["purple"]),
+        ("orange", ["orange"]),
+        ("white", ["white", "normal"]),
     ],
     "$light_amount": [
         ("low", ["low", "dim", "dark"]),
         ("high", ["high", "bright"]),
         ("down", ["down", "lower", "darker"]),
-        ("up", ["up", "brighter"])
+        ("up", ["up", "brighter"]),
     ],
     "$volume": [
         ("high", ["high", "loud"]),
         ("low", ["low", "quiet", "down"]),
         ("up", ["up", "louder"]),
-        ("down", ["down", "quieter"])
+        ("down", ["down", "quieter"]),
     ],
     "$location": [
         ("san_francisco", ["sf", "san francisco", "the city"]),
@@ -79,11 +86,11 @@ variables = {
         ("btc", ["btc", "bitcoin", "bitcoins"]),
         ("eth", ["eth", "ethereum", "etherium", "ether"]),
         ("usd", ["usd", "dollars", "us dollars", "the fed"]),
-        ("pesos", ["pesos", "mexican dollars"])
-    ]
+        ("pesos", ["pesos", "mexican dollars"]),
+    ],
 }
 
-prefixes = ["please", "pls", "could you", "would you", "hey", "yo", "excuse me please"]
+prefixes = ["please", "pls", "hey maia", "hi", "could you", "would you", "hey", "yo", "excuse me please"]
 suffixes = ["thanks", "thank you", "please", "plox", "ok", "thank you so much"]
 
 # Choose a random pair of templates (output, input)
