@@ -1,12 +1,11 @@
 from data import *
 from model import *
 
-encoder = torch.load('seq2seq-encoder.pt')
-decoder = torch.load('seq2seq-decoder.pt')
+MIN_PROB = -0.1
 
 # # Evaluating the trained model
 
-def evaluate(sentence, max_length=MAX_LENGTH):
+def evaluate(encoder, decoder, sentence, max_length=MAX_LENGTH):
     input_variable = input_lang.variable_from_sentence(sentence)
     input_length = input_variable.size()[0]
     encoder_hidden = encoder.init_hidden()
@@ -49,19 +48,23 @@ test_sentences = [
     'is my light on'
 ]
 
-def evaluate_tests():
+def evaluate_tests(encoder, decoder, ):
     for test_sentence in test_sentences:
-        command, prob, attn = evaluate(test_sentence)
-        if prob > -0.05:
-            print(prob, command)
+        command, prob, attn = evaluate(encoder, decoder, test_sentence)
+        if prob < MIN_PROB:
+            print(test_sentence, '\n\t', prob, '???')
         else:
-            print(prob, "UNKNOWN")
+            print(test_sentence, '\n\t', prob, command)
 
 if __name__ == '__main__':
     import sys
     input = sys.argv[1]
     print('input', input)
-    command, prob, attn = evaluate(input)
+
+    encoder = torch.load('seq2seq-encoder.pt')
+    decoder = torch.load('seq2seq-decoder.pt')
+
+    command, prob, attn = evaluate(encoder, decoder, input)
     if prob > -0.05:
         print(prob, command)
     else:
