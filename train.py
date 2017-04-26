@@ -7,18 +7,22 @@ import torch.nn.functional as F
 import math
 import time
 import os
+import argparse
 
 import sconce
 
-n_epochs = 200
-n_iters = 100
-hidden_size = 50
-n_layers = 2
-dropout_p = 0.1
-learning_rate = 0.05
+# Parse command line arguments
+argparser = argparse.ArgumentParser()
+argparser.add_argument('--n_epochs', type=int, default=200)
+argparser.add_argument('--n_iters', type=int, default=200)
+argparser.add_argument('--hidden_size', type=int, default=50)
+argparser.add_argument('--n_layers', type=int, default=2)
+argparser.add_argument('--dropout_p', type=float, default=0.1)
+argparser.add_argument('--learning_rate', type=float, default=0.05)
+args = argparser.parse_args()
 
-sconce.start(os.environ['SCONCE_PROGRAM_ID'])
-sconce.log_every = n_iters
+job = sconce.Job('seq2seq-intent-parsing', vars(args))
+job.log_every = args.n_iters * 10
 
 from data import *
 from model import *
@@ -64,27 +68,27 @@ def save():
     save_model(encoder, 'seq2seq-encoder.pt')
     save_model(decoder, 'seq2seq-decoder.pt')
 
-encoder = EncoderRNN(input_lang.size, hidden_size)
-decoder = AttnDecoderRNN(hidden_size, output_lang.size, n_layers, dropout_p=dropout_p)
+encoder = EncoderRNN(input_lang.size, args.hidden_size)
+decoder = AttnDecoderRNN(args.hidden_size, output_lang.size, args.n_layers, dropout_p=args.dropout_p)
 
-encoder_optimizer = optim.SGD(encoder.parameters(), lr=learning_rate)
-decoder_optimizer = optim.SGD(decoder.parameters(), lr=learning_rate)
+encoder_optimizer = optim.Adam(encoder.parameters(), lr=args.learning_rate)
+decoder_optimizer = optim.Adam(decoder.parameters(), lr=args.learning_rate)
 criterion = nn.NLLLoss()
 
 try:
-    print("Training for %d epochs..." % n_epochs)
+    print("Training for %d epochs..." % args.n_epochs)
 
-    for epoch in range(n_epochs):
-        training_pairs = generate_training_pairs(n_iters)
+    for epoch in range(args.n_epochs):
+        training_pairs = generate_training_pairs(args.n_iters)
 
-        for i in range(n_iters):
+        for i in range(args.n_iters):
             input_variable = training_pairs[i][0]
             target_variable = training_pairs[i][1]
             loss = train(input_variable, target_variable)
 
-            sconce.record((n_iters * epoch) + i, loss)
+            job.record((args.n_iters * epoch) + i, loss)
 
-        evaluate_tests()
+        evaluate_tests(encoder, decoder)
 
     print("Saving...")
     save()
