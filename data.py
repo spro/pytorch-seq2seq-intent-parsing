@@ -7,19 +7,18 @@ import re
 
 templates = [
     ("lights setState $light_name $light_state", [
-        "turn $light_state $light_name",
-        "turn $light_name $light_state",
+        "~turn $light_state $light_name",
+        "~turn $light_name $light_state",
     ]),
     ("lights setState $light_name $light_amount", [
-        "set $light_name $light_amount",
-        "make $light_name $light_amount",
+        "~turn $light_name $light_amount",
     ]),
     ("lights setStates $group_name $light_state", [
-        "turn $light_state $group_name",
-        "turn $group_name $light_state",
+        "~turn $light_state $group_name",
+        "~turn $group_name $light_state",
     ]),
     ("lights setStates $group_name $light_amount", [
-        "set $group_name $light_amount",
+        "~turn $group_name $light_amount",
     ]),
     ("lights getState $light_name", [
         "is $light_name on",
@@ -28,20 +27,20 @@ templates = [
         "are $group_name on",
     ]),
     ("music setVolume $volume", [
-         "turn the music $volume",
-         "make it $volume",
+         "~turn the music $volume",
+         "~turn it $volume",
     ]),
     ("time getTime", [
          "what time is it",
-         "what is the time",
+         "~whatis the time",
     ]),
     ("price getPrice $asset", [
          "how much is $asset",
-         "what is the price of $asset",
+         "~whatis the price of $asset",
     ]),
     ("weather getWeather $location", [
          "tell me the weather in $location",
-         "what is it like in $location",
+         "~whatis it like in $location",
     ]),
 ]
 
@@ -90,6 +89,11 @@ variables = {
     ],
 }
 
+synonyms = {
+    "~turn": ["turn", "set", "make"],
+    "~whatis": ["what is", "what's", "whats"],
+}
+
 prefixes = ["please", "pls", "hey maia", "hi", "could you", "would you", "hey", "yo", "excuse me please"]
 suffixes = ["thanks", "thank you", "please", "plox", "ok", "thank you so much"]
 
@@ -126,6 +130,10 @@ def fill_template(template, template_variables):
         # Choose variable
         if word[0] == '$':
             filled.append(template_variables[word])
+        # Choose synonym
+        elif word[0] == '~':
+            filled.append(random.choice(synonyms[word]))
+        # Regular word
         else:
             filled.append(word)
     return ' '.join(filled)
