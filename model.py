@@ -18,7 +18,7 @@ class EncoderRNN(nn.Module):
         self.n_layers = n_layers
 
         self.embedding = nn.Linear(input_size, hidden_size)
-        self.gru = nn.GRU(hidden_size, hidden_size)
+        self.gru = nn.GRU(hidden_size, hidden_size, n_layers)
 
     def forward(self, input):
         seq_len = input.size(0)
@@ -70,3 +70,22 @@ class AttnDecoderRNN(nn.Module):
         # Return final output, hidden state, and attention weights (for visualization)
         return output, hidden, attn_weights
 
+if __name__ == '__main__':
+    print("Testing models...")
+    n_layers = 2
+    input_size = 10
+    hidden_size = 50
+    output_size = 10
+    encoder = EncoderRNN(input_size, hidden_size, n_layers=n_layers)
+    decoder = AttnDecoderRNN('dot', hidden_size, output_size, n_layers=n_layers)
+
+    # Test encoder
+    inp = Variable(torch.rand(5, 1, input_size))
+    encoder_outputs, encoder_hidden = encoder(inp)
+    print('encoder_outputs', encoder_outputs.size())
+    print('encoder_hidden', encoder_hidden.size())
+
+    # Test encoder
+    decoder_input = Variable(torch.LongTensor([[0]])) # SOS
+    decoder_hidden = encoder_hidden
+    decoder_output, decoder_hidden, decoder_attention = decoder(decoder_input, decoder_hidden, encoder_outputs)
