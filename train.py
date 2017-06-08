@@ -15,10 +15,10 @@ import sconce
 argparser = argparse.ArgumentParser()
 argparser.add_argument('--n_epochs', type=int, default=200)
 argparser.add_argument('--n_iters', type=int, default=200)
-argparser.add_argument('--hidden_size', type=int, default=50)
+argparser.add_argument('--hidden_size', type=int, default=100)
 argparser.add_argument('--n_layers', type=int, default=2)
 argparser.add_argument('--dropout_p', type=float, default=0.1)
-argparser.add_argument('--learning_rate', type=float, default=0.05)
+argparser.add_argument('--learning_rate', type=float, default=0.001)
 args = argparser.parse_args()
 
 job = sconce.Job('seq2seq-intent-parsing', vars(args))
