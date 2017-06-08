@@ -31,16 +31,25 @@ templates = [
          "~turn it $volume",
     ]),
     ("time getTime", [
+         "time",
          "what time is it",
          "~whatis the time",
     ]),
     ("price getPrice $asset", [
+         "$asset",
          "how much is $asset",
-         "~whatis the price of $asset",
+         "~price of $asset",
+         "~whatis the ~price of $asset",
     ]),
     ("weather getWeather $location", [
          "tell me the weather in $location",
          "~whatis it like in $location",
+    ]),
+    ("greeting", [
+        "hi", "hello", "how are you", "what's up", "hey maia",
+    ]),
+    ("thanks", [
+        "thanks", "thank you", "thank you so much", "thx", "you're great",
     ]),
 ]
 
@@ -90,8 +99,9 @@ variables = {
 }
 
 synonyms = {
-    "~turn": ["turn", "set", "make"],
-    "~whatis": ["what is", "what's", "whats"],
+    "~turn": ["turn", "set", "make", "put", "change"],
+    "~whatis": ["what is", "what's", "whats", "tell me", "tell us", "tell me about", "what about", "how about", "show me"],
+    "~price": ["price", "value", "exchange rate", "dollar amount"],
 }
 
 prefixes = ["please", "pls", "hey maia", "hi", "could you", "would you", "hey", "yo", "excuse me please"]
@@ -155,7 +165,7 @@ def random_training_pair():
     output_string = fill_template(output_template, output_variables)
     input_string = fill_template(input_template, input_variables)
     input_string = add_fixes(input_string)
-    
+
     return input_string, output_string
 
 for i in range(10):
@@ -175,10 +185,10 @@ class DictionaryLang():
         self.word2count = {}
         self.index2word = {0: "SOS", 1: "EOS"}
         self.size = 2 # Count SOS and EOS
-      
+
     def __str__(self):
         return "%s(size = %d)" % (self.__class__.__name__, self.size)
-    
+
     def add_word(self, word):
         if word not in self.word2index:
             self.word2index[word] = self.size
@@ -187,7 +197,7 @@ class DictionaryLang():
             self.size += 1
         else:
             self.word2count[word] += 1
-    
+
     def get_word(self, word):
         return self.word2index[word]
 
@@ -231,7 +241,7 @@ class GloVeLang:
         glove_dict, glove_arr, glove_size = load_word_vectors('data/', 'glove.twitter.27B', size)
         self.glove_dict = glove_dict
         self.glove_arr = glove_arr
-        
+
     def __str__(self):
         return "%s(size = %d)" % (self.__class__.__name__, self.size)
 
