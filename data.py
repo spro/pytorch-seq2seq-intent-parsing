@@ -104,8 +104,8 @@ synonyms = {
     "~price": ["price", "value", "exchange rate", "dollar amount"],
 }
 
-prefixes = ["please", "pls", "hey maia", "hi", "could you", "would you", "hey", "yo", "excuse me please"]
-suffixes = ["thanks", "thank you", "please", "plox", "ok", "thank you so much"]
+prefixes = ["please", "pls", "hey maia", "hi", "could you", "would you", "hey", "yo", "ey", "oy", "excuse me please"]
+suffixes = ["thanks", "thank you", "please", "plz", "pls", "plox", "ok", "thank you so much"]
 
 # Choose a random pair of templates (output, input)
 def choose_templates():
@@ -176,8 +176,10 @@ for i in range(10):
 SOS_token = 0
 EOS_token = 1
 
-def tokenize_sentence(sentence):
-    return re.sub('[^\w\s]', '', sentence).strip().split(' ')
+def tokenize_sentence(s):
+    s = re.sub('[^\w\s]', '', s)
+    s = re.sub('\s+', ' ', s)
+    return s.strip().split(' ')
 
 class DictionaryLang():
     def __init__(self):
@@ -252,7 +254,7 @@ class GloVeLang:
             return torch.zeros(self.size)
 
     def variable_from_sentence(self, sentence):
-        words = tokenize_sentence(sentence)
+        words = tokenize_sentence(sentence.lower())
         tensor = torch.zeros(len(words), 1, self.size)
         for wi in range(len(words)):
             word = words[wi]
