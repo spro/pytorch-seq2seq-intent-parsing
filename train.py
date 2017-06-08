@@ -31,33 +31,29 @@ from evaluate import *
 # # Training
 
 def train(input_variable, target_variable):
-    encoder_hidden = encoder.init_hidden()
-
     encoder_optimizer.zero_grad()
     decoder_optimizer.zero_grad()
 
     input_length = input_variable.size()[0]
     target_length = target_variable.size()[0]
-    encoder_outputs = Variable(torch.zeros(MAX_LENGTH, encoder.hidden_size))
-    loss = 0
 
-    for ei in range(input_length):
-        encoder_output, encoder_hidden = encoder(input_variable[ei], encoder_hidden)
-        encoder_outputs[ei] = encoder_output[0][0]
+    encoder_outputs, encoder_hidden = encoder(input_variable)
 
     decoder_input = Variable(torch.LongTensor([[SOS_token]]))
     decoder_hidden = encoder_hidden
-    
+
+    loss = 0
+
     for di in range(target_length):
-        decoder_output, decoder_hidden, decoder_attention = decoder(decoder_input, decoder_hidden, encoder_output, encoder_outputs)
+        decoder_output, decoder_hidden, decoder_attention = decoder(decoder_input, decoder_hidden, encoder_outputs)
         loss += criterion(decoder_output[0], target_variable[di])
         decoder_input = target_variable[di] # Teacher forcing
 
     loss.backward()
-    
+
     encoder_optimizer.step()
     decoder_optimizer.step()
-    
+
     return loss.data[0] / target_length
 
 def save_model(model, filename):
@@ -69,7 +65,7 @@ def save():
     save_model(decoder, 'seq2seq-decoder.pt')
 
 encoder = EncoderRNN(input_lang.size, args.hidden_size)
-decoder = AttnDecoderRNN(args.hidden_size, output_lang.size, args.n_layers, dropout_p=args.dropout_p)
+decoder = AttnDecoderRNN('dot', args.hidden_size, output_lang.size, args.n_layers, dropout_p=args.dropout_p)
 
 encoder_optimizer = optim.Adam(encoder.parameters(), lr=args.learning_rate)
 decoder_optimizer = optim.Adam(decoder.parameters(), lr=args.learning_rate)
